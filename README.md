@@ -42,7 +42,9 @@ The production files are generated in `dist/`.
 
 ## Deployment
 
-StatSimple is a static Vite application and can be deployed to Vercel by importing its GitHub repository. Use `npm run build` as the build command and `dist` as the output directory. No server-side configuration or environment variables are required.
+StatSimple is deployed as a static GitHub Pages site at [https://gsingh2005.github.io/StatSimple/](https://gsingh2005.github.io/StatSimple/). After GitHub Pages is configured to use GitHub Actions, every push to `main` automatically builds and deploys the site.
+
+The deployment workflow runs `npm run build` and publishes the generated `dist/` directory. No environment variables or server-side configuration are required.
 
 ## Project Structure
 
