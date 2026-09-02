@@ -1,92 +1,81 @@
 # StatSimple
 
-StatSimple is a browser-based statistics and econometrics workspace for exploratory analysis, hypothesis testing, and regression without leaving the browser.
+StatSimple is a browser-based statistics workspace for people who understand their data and research question but do not necessarily know which statistical method to use first.
 
-## Features
+The app is fully static and keeps all parsing, transformations, and statistical calculations inside the browser so datasets stay local.
 
-- Create, upload, duplicate, rename, delete, and reopen multiple browser-local datasets.
-- Import CSV files, enter or paste data manually, inspect inferred variable types, and export CSV.
-- Use deterministic Quick Clean suggestions for whitespace, missing-value markers, empty rows, and duplicate column names.
-- Generate logarithms, squared terms, and standardized variables with explicit validation.
-- Use a theme-aware workspace, data editor, chart view, automated data summary, and local analysis history.
+## What It Does
 
-## Implemented Methods
+- Imports CSV files locally in the browser.
+- Ships guided sample datasets for common beginner workflows.
+- Profiles variables with deterministic type inference and manual type overrides.
+- Supports spreadsheet-style edits, cleaning, transformations, CSV export, and local undo.
+- Recommends analyses from question-first workflows.
+- Renders contextual charts, plain-English interpretations, analysis checks, and technical details.
+- Stores recent analyses locally and warns when they came from an earlier dataset revision.
 
-- Descriptive statistics: quantiles, standard error, confidence interval, coefficient of variation, skewness, and excess kurtosis.
-- Pearson and Spearman correlation with pairwise missing-value exclusion.
-- One-sample, Welch independent-samples, and paired t-tests.
-- One-way ANOVA and chi-square independence calculations in the calculation engine.
-- Multiple ordinary least squares regression with conventional, HC0, HC1, HC2, or HC3 standard errors; confidence intervals; residual diagnostics; VIF; Breusch-Pagan; and Durbin-Watson.
+Statistical conventions, missing-data handling, and inference limitations are documented in [STATISTICAL_VALIDATION.md](/Users/gurjotsingh/Documents/Playground/StatSimple/docs/STATISTICAL_VALIDATION.md).
 
-All calculations run locally in the browser. Uploaded data is never sent to a server, and StatSimple needs no API keys, accounts, or database.
+## Supported Analyses
 
-## Tech Stack
+- Numeric descriptive statistics
+- Categorical frequency summaries
+- Pearson correlation
+- Spearman correlation
+- Simple linear regression
+- One-sample t-test
+- Independent-samples Welch t-test
+- Paired-samples t-test
+- One-way ANOVA
+- Chi-square test of independence
+- Multiple linear regression
 
-- React
-- TypeScript
-- Vite
-- Recharts
-- Papa Parse
-- jStat
-- Vitest
-
-## Running Locally
+## Development
 
 ```bash
-git clone <repository-url>
-cd StatSimple
 npm install
 npm run dev
 ```
-
-Vite prints a local URL in the terminal, usually `http://localhost:5173`.
-
-## Production Build
-
-```bash
-npm run build
-npm run preview
-```
-
-The production files are generated in `dist/`.
 
 ## Testing
 
 ```bash
 npm test
+npm run typecheck
+npm run lint
 ```
 
-The Vitest suite covers descriptive statistics, correlations, t-tests, ANOVA, chi-square, multiple OLS, robust errors, diagnostics, VIF, and invalid/singular models.
+## Production Build
+
+```bash
+npm run build
+```
+
+The Vite config uses `base: "/StatSimple/"` so the generated assets work for the GitHub Pages repository path `https://gsingh2005.github.io/StatSimple/`.
 
 ## Deployment
 
-StatSimple is deployed as a static GitHub Pages site at [https://gsingh2005.github.io/StatSimple/](https://gsingh2005.github.io/StatSimple/). After GitHub Pages is configured to use GitHub Actions, every push to `main` automatically builds and deploys the site.
+GitHub Pages deployment is configured in [deploy-pages.yml](/Users/gurjotsingh/Documents/Playground/StatSimple/.github/workflows/deploy-pages.yml). The workflow:
 
-The deployment workflow runs `npm run build` and publishes the generated `dist/` directory. No environment variables or server-side configuration are required.
+1. Checks out the repository.
+2. Configures GitHub Pages.
+3. Installs dependencies with `npm ci`.
+4. Runs tests, typecheck, and lint.
+5. Builds the static `dist/` output.
+6. Uploads `dist/` as a Pages artifact.
+7. Deploys that artifact to the `github-pages` environment.
 
-## Limitations and Roadmap
+In the repository settings, the Pages publishing source should be set to GitHub Actions.
 
-StatSimple is intended for teaching, exploratory work, and common applied analysis. It does not replace statistical expertise or full desktop statistical software. Current browser-local limits make it best suited to modest-sized datasets; large data can make charts and calculations slow.
+## Architecture
 
-Planned work includes fuller categorical-regressor/dummy workflows, interaction builders, additional transforms, correlation matrices, fixed effects, cluster-robust inference, logistic regression, and time-series diagnostics. These are not advertised as implemented until they have been validated and tested.
+The application is split into a few clear layers:
 
-## Project Structure
+- Data layer: canonical dataset model, CSV parsing, type inference, profiling, cleaning, transformations, and local persistence.
+- Statistics layer: pure functions for descriptive statistics, correlation, regression, group comparisons, ANOVA, and chi-square.
+- Interpretation layer: converts structured numerical results into beginner-friendly headlines, metrics, checks, technical details, and visualization models.
+- UI layer: React pages for Overview, Data, Analyze, and Advanced, plus shared components for checks, glossary help, history, and charts.
 
-```text
-src/
-  App.tsx             Main application screens and workflows
-  data/               Included example datasets
-  statistics.ts       Pure statistical calculation helpers
-  styles.css          Responsive application styling
-  tests/              Statistics-engine tests
-```
+## Privacy
 
-## Contributing / Development
-
-Create changes in a branch, then use the standard Git workflow:
-
-```bash
-git add .
-git commit -m "Describe changes"
-git push
-```
+StatSimple does not send datasets to a backend or third-party analysis API. Core functionality is entirely local to the browser.
